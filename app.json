@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "ProjectMT",
-    "slug": "projectmt",
-    "scheme": "projectmt",
+    "name": "MedTracker",
+    "slug": "MedTracker",
+    "scheme": "MedTracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,7 +26,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-asset"
     ]
   }
 }

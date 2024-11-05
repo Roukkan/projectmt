@@ -7,24 +7,7 @@ import CustomButton from "./../../components/customButton";
 import { Link, router } from "expo-router";
 import { createUser } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
-
-// Password validation function
-// function validatePassword(password) {
-//   const minLength = 8;
-//   const maxLength = 265;
-
-//   if (password.length < minLength || password.length > maxLength) {
-//     return `Password must be between ${minLength} and ${maxLength} characters long.`;
-//   }
-
-//   // List of common passwords to avoid (extend as needed)
-//   const commonPasswords = ["12345678", "password", "qwerty"];
-//   if (commonPasswords.includes(password)) {
-//     return "Password is too common. Please choose a more secure password.";
-//   }
-
-//   return null; // No errors
-// }
+import { SelectList } from "react-native-dropdown-select-list";
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,25 +16,37 @@ const SignUp = () => {
     username: "",
     email: "",
     password: "",
+    role: "",
+    contactNo: "",
   });
 
+  const data = [
+    { label: "Family", value: "Family" },
+    { label: "Caregiver / Nurse", value: "Nurse" },
+  ];
+
   const submit = async () => {
-    if (!form.username || !form.email || !form.password) {
+    if (
+      !form.username ||
+      !form.email ||
+      !form.password ||
+      !form.role ||
+      !form.contactNo
+    ) {
       Alert.alert("Error", "Please fill in all the fields");
       return;
     }
 
-    // // Validate the password before proceeding
-    // const passwordError = validatePassword(form.password);
-    // if (passwordError) {
-    //   Alert.alert("Password Error", passwordError);
-    //   return;
-    // }
-
     setIsSubmitting(true);
 
     try {
-      const result = await createUser(form.email, form.password, form.username);
+      const result = await createUser(
+        form.email,
+        form.password,
+        form.username,
+        form.role,
+        form.contactNo
+      );
       setUser(result);
       setIsLogged(true);
 
@@ -64,17 +59,17 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="bg-white h-full">
       <ScrollView>
         <View className="w-full justify-center min-h-[85vh] px-4 my-6">
           <Image
             source={images.logo}
             resizeMode="contain"
-            className="w-[115px] h-[35px]"
+            className="w-[500px] h-[140px] -pb-20 -mb-20"
           />
 
-          <Text className="text-2xl text-white text-semibold font-psemibold mt-10">
-            Sign Up to Aora
+          <Text className="text-2xl text-primary text-semibold font-psemibold mt-10">
+            Sign Up
           </Text>
 
           <FormField
@@ -99,6 +94,50 @@ const SignUp = () => {
             otherStyles="mt-7"
           />
 
+          <FormField
+            title="Role"
+            value={form.role}
+            handleChangeText={(e) => setForm({ ...form, role: e })}
+            otherStyles="mt-7 hidden"
+          />
+
+          <Text className="mt-7 text-base text-primary font-pmedium">Role</Text>
+          <View className="mt-2">
+            <SelectList
+              setSelected={(val) => setForm({ ...form, role: val })}
+              data={data}
+              save="value"
+              placeholder="Select a role"
+              searchPlaceholder="Search roles..."
+              boxStyles={{
+                borderWidth: 2,
+                borderRadius: 10,
+                marginTop: 10,
+                width: "100%",
+                backgroundColor: "#e5e7eb",
+                borderColor: "#CDCDE0",
+              }}
+              inputStyles={{
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                fontSize: 17,
+                fontFamily: "Poppins-Regular",
+                fontWeight: "700",
+                marginLeft: -20,
+              }}
+              dropdownStyles={{ maxHeight: 150 }}
+              dropdownItemStyles={{ fontSize: 20 }}
+              dropdownTextStyles={{ fontSize: 20 }}
+            />
+          </View>
+
+          <FormField
+            title="Mobile Number"
+            value={form.contactNo}
+            handleChangeText={(e) => setForm({ ...form, contactNo: e })}
+            otherStyles="mt-7"
+          />
+
           <CustomButton
             title="Sign Up"
             handlePress={submit}
@@ -107,12 +146,12 @@ const SignUp = () => {
           />
 
           <View className="justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100 font-pregular">
+            <Text className="text-lg text-primary font-pregular">
               Have an account already?
             </Text>
             <Link
               href="/sign-in"
-              className="text-lg font-psemibold text-secondary"
+              className="text-lg font-psemibold text-tertiary"
             >
               Sign In
             </Link>
